@@ -1,25 +1,84 @@
 .App {
   text-align: center;
-}
-
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  height: 100vh;
+}
+
+.bodyContainer {
+  background-color: whitesmoke;
+  flex: 1 100%; 
+  display: flex;
   font-size: calc(10px + 2vmin);
-  color: white;
+  flex-direction: column;
 }
 
 .App-link {
   color: #61dafb;
+}
+
+.stockBody {
+  
+  display: flex;
+  flex-direction: row;
+  overflow: auto;
+  background-color: bisque;
+  flex: 1;
+
+}
+
+.stockBody::-webkit-scrollbar {
+  display: none;
+}
+
+.stockCard {
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  min-width: 650px;
+  border-radius: 5px;
+  box-shadow: 5px 5px 10px 0px rgba(163,163,163,1);
+  margin: 10px;
+  color: black;
+}
+
+.stockDetails {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  flex: 1;
+  align-items: flex-end;
+}
+
+.stockDetailsText {
+  margin: 0px;
+  padding: 0 15px;
+  font-size: 39px;
+}
+
+.stockDetailsStats {
+  margin: 0px;
+  font-size: 22px;
+  color: red;
+}
+
+.stockChart {
+  display: flex;
+  flex: 5;
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.lineChart {
+  font-size: 12px;
+}
+
+.watchlistBody {
+  display: flex;
+  flex: 1;
 }
 
 @keyframes App-logo-spin {
