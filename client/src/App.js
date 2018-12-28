@@ -1,9 +1,13 @@
+//LOAD IN LATEST CLOSE FROM SERVER
+//make the get function work for any stock
+//make the chart into a component 
+
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Button from "@material-ui/core/Button";
 import PrimarySearchAppBar from './components/PrimarySearchAppBar';
-import { LineChart, XAxis, YAxis, CartesianGrid, Line, Legend, Tooltip, ResponsiveContainer } from 'recharts';
+import { LineChart, XAxis, YAxis, CartesianGrid, Line, Legend, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 
 const data = [
   {name: 'Page A', uv: 4000, pv: 2400, amt: 2400},
@@ -18,13 +22,23 @@ const data = [
 class App extends Component {
 
   state = {
-    data: null
+    data: null,
+    googl: [],
+    dataRetrieved: false
   }
 
   componentDidMount() {
     // Call our fetch function below once the component mounts
     this.callBackendAPI()
       .then(res => this.setState({ data: res.express }))
+      .catch(err => console.log(err));
+
+    this.callGOOG()
+      .then(res => this.setState({ 
+        googl: res.data, 
+        dataRetrieved: true
+      }))
+      .then(console.log(this.state.googl))
       .catch(err => console.log(err));
   }
   
@@ -39,27 +53,54 @@ class App extends Component {
     return body;
   };  
 
+  callGOOG = async () => {
+    const response = await fetch('/GOOG')
+    const body = await response.json()
+
+    if (response.status !== 200) {
+      throw Error(body.message)
+    }
+    return body
+  }
+
   render() {
+
+    const { dataRetrieved } = this.state
+    const currentData = this.state.googl['12/28/2018']
+    //const currentClose = currentData.intraday[currentData.intraday.length - 1].closing_price
+
     return (
       <div className="App">
         <PrimarySearchAppBar />
+            
         <div className="bodyContainer">
           <div className="stockBody">
             <div className="stockCard">
               <div className="stockDetails">
-                <p className="stockDetailsText">GOOG · $1,046</p>
+                <p className="stockDetailsText">`GOOG · $1047`</p>
                 <p className="stockDetailsStats">-21.3(2.08%)</p>
               </div>
               <div className="stockChart">
+              {dataRetrieved ? (
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart className="lineChart" data={data}
+                  <AreaChart className="lineChart" data={currentData.intraday}
                       margin={{top: 5, bottom: 5, right: 30}}>
-                    <YAxis axisLine={false} tickLine={false}/>
+                    <defs>
+                      <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8}/>
+                        <stop offset="95%" stopColor="#8884d8" stopOpacity={0}/>
+                      </linearGradient>
+                    </defs>
+                    <YAxis axisLine={false} tickLine={false} interval={0} allowDecimals={false} type="number" domain={['auto', 'auto']}/>
+                    <XAxis axisLine={false} padding={{left:10}} tickLine={false} interval={6} height={30} dataKey="time" reversed={true}/>
                     <CartesianGrid vertical={false}/>
-                    <Tooltip/>
-                    <Line type="monotone" dataKey="pv" stroke="#8884d8" activeDot={{r: 8}}/>
-                  </LineChart>
+                    <Tooltip coordinate={{ x: 1000, y: 0 }}/>
+                    <Area type="monotone" dataKey="closing_price" dot={false} stroke="#8884d8" activeDot={{r: 8}} fill="url(#colorUv)"/>
+                  </AreaChart>
                 </ResponsiveContainer>
+              ) : ( 
+                <p>loading</p> 
+              )}
               </div>
               
             </div>
@@ -91,7 +132,6 @@ class App extends Component {
           <div className="watchlistBody">
             <p>{this.state.data}</p>
           </div>
-
         </div>
       </div>
     );

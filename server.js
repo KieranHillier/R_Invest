@@ -1,7 +1,3 @@
-//filter data so it only pulls data from current day
-//pass data into firebase app
-//make sure it happens once a minute
-
 const axios = require('axios');
 const admin = require('firebase-admin');
 const express = require('express');
@@ -35,11 +31,11 @@ setInterval(() => {
   stockIndex++ 
 
   console.log(stockCurrent)
-    axios.get(`https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${stockCurrent}&interval=60min&apikey=7MEEDQQFFWLGDYBH`)
+    axios.get(`https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${stockCurrent}&interval=5min&apikey=7MEEDQQFFWLGDYBH`)
     .then(response => {
       //console.log(response.data);
       const data = response.data
-      const timeSeries = data['Time Series (60min)']
+      const timeSeries = data['Time Series (5min)']
       const newSymbol = data['Meta Data']['2. Symbol']
       const searchDate = data['Meta Data']['3. Last Refreshed']
 
@@ -99,9 +95,24 @@ setInterval(() => {
     .catch(error => {
       console.log(error);
     });
-}, 10000);
+}, 100000);
 
 // create a GET route
 app.get('/express_backend', (req, res) => {
   res.send({ express: 'YOUR EXPRESS BACKEND IS CONNECTED TO REACT' });
 });
+
+// GET route for GOOG data
+app.get('/goog', (req, res) => {
+
+  const docRef = db.collection('stocks').doc('GOOGL');
+  const getDoc = docRef.get()
+    .then((doc) => {
+      (!doc.exists) ? res.send({ data: 'no document'}) : res.send({ data: doc.data()})
+    })
+    .catch((err) => {
+      res.send({ data: 'error occured'})
+    })
+
+  //res.send({ response: 'good shit homie'})
+})
