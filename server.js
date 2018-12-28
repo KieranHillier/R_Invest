@@ -16,6 +16,8 @@ admin.initializeApp({
   databaseURL: "https://bloop-89289.firebaseio.com"
 });
 
+const db = admin.firestore();
+
 // console.log that your server is up and running
 app.listen(port, () => console.log(`Listening on port ${port}`));
 
@@ -47,10 +49,22 @@ setInterval(() => {
       let newPrice = 0
 
       const currentDate = new Date(searchDate)
+      const currentDay = currentDate.getDay()
       const dateConverted = currentDate.toLocaleDateString('en-US')
 
       for (var time in timeSeries) {
-        newTime = time
+
+        const activeDate = new Date(time)
+        const activeDay= activeDate.getDay()
+
+        if (activeDay < currentDay) {
+          break
+        }
+
+        const activeHour = activeDate.getHours()
+        const activeMinutes = activeDate.getMinutes()
+        newTime = `${activeHour}:${activeMinutes}`
+
         newPrice = Number(timeSeries[time]['4. close'])
         newObj = {
           time: newTime,
@@ -69,6 +83,18 @@ setInterval(() => {
     .then(() => {
       //add to firebase database
       console.log(finalObj)
+
+      const docRef = db.collection('stocks').doc(finalObj.symbol);
+
+      //send data to firebase
+      const date = docRef.set({
+        [finalObj.date]: {
+          symbol: finalObj.symbol,
+          date: finalObj.date,
+          intraday: finalObj.intraday
+        }
+      });
+
     })
     .catch(error => {
       console.log(error);
