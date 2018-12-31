@@ -69,10 +69,22 @@ setInterval(() => {
         newData.push(newObj)
       }
 
+      const closingPrice = newData[0].closing_price
+      const startingPrice = newData[newData.length - 1].closing_price
+      const differencePrice = closingPrice - startingPrice
+      const differencePercentagePrice = differencePrice / startingPrice * 100
+
+      const fixedPrice = Math.round((differencePrice + 0.00001) * 100) / 100
+      const fixedPercentagePrice = Math.round((differencePercentagePrice + 0.00001) * 100) / 100
+
       finalObj = {
         symbol: newSymbol,
         date: dateConverted,
-        intraday: newData
+        intraday: newData,
+        closingPrice: closingPrice,
+        startingPrice: startingPrice,
+        differencePrice: fixedPrice,
+        differencePercentagePrice: fixedPercentagePrice
       }
 
     })
@@ -84,10 +96,14 @@ setInterval(() => {
 
       //send data to firebase
       const date = docRef.set({
-        [finalObj.date]: {
+        daily: {
           symbol: finalObj.symbol,
           date: finalObj.date,
-          intraday: finalObj.intraday
+          intraday: finalObj.intraday,
+          closingPrice: finalObj.closingPrice,
+          startingPrice: finalObj.startingPrice,
+          differencePrice: finalObj.differencePrice,
+          differencePercentagePrice: finalObj.differencePercentagePrice
         }
       });
 
@@ -115,4 +131,24 @@ app.get('/goog', (req, res) => {
     })
 
   //res.send({ response: 'good shit homie'})
+})
+
+// GET data for all Hot Stocks
+// add a check to see if all stocks exists
+app.get('/hotStocks', (req, res) => {
+
+  const stocksRef = db.collection('stocks');
+  const allStocks = stocksRef.get()
+    .then(snapshot => {
+      const allData = []
+      snapshot.forEach(doc => {
+        // console.log(doc.id, '=>', doc.data());
+        allData.push(doc.data())
+      });
+      res.send({ data: allData })
+    })
+    .catch(err => {
+      console.log('Error getting documents', err);
+    });
+
 })
