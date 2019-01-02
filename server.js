@@ -53,7 +53,7 @@ setInterval(() => {
         const activeDate = new Date(time)
         const activeDay= activeDate.getDay()
 
-        if (activeDay < currentDay) {
+        if (activeDay != currentDay) {
           break
         }
 
