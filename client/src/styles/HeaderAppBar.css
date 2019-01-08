@@ -1,0 +1,79 @@
+.topHeaderContainer {
+    width: 100%;
+    background-color: #1EA1F7;
+    padding-bottom: 12px;
+    padding-top: 12px;
+}
+
+.topHeaderBody {
+    margin: 0 auto;
+    padding-left: 35px;
+    padding-right: 35px;
+    /* max-width: 1300px; */
+    display: flex;
+    flex-direction: row;
+    color: #fff;
+    font-size: 18px;
+    line-height: 16px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#companyTitle {
+    font-size: 32px;
+}
+
+.topSubHeaderContainer {
+    width: 100%;
+    background-color: #1D2E51;
+}
+
+.topSubHeaderBody {
+    color: #73A1CB;
+    margin: 0 auto;
+    padding-left: 35px;
+    padding-right: 35px;
+    /* max-width: 1300px; */
+    font-size: 15px;
+}
+
+#topSubHeaderList {
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    margin: 0;
+    padding: 0;
+}
+
+.topSubHeaderListItem {
+    line-height: 19px;
+    margin-left: 12px;
+    padding: 10px 3px 8px;
+    border-bottom: 3px solid transparent;
+    color: #73A1CB;
+}
+
+.topSubHeaderListItem:first-of-type {
+    margin-left: 0;
+}
+
+.topSubHeaderListItemLink {
+    color: #73A1CB;
+}
+
+#active {
+    border-bottom-color: #fff
+}
+
+#active>a {
+    color: #fff;
+}
+
+.topSubHeaderListItem>a {
+    text-decoration: none;
+}
+
+.topSubHeaderListItemLink:hover {
+    color: #fff;
+    cursor: pointer;
+}

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { LineChart, ReferenceLine, XAxis, YAxis, CartesianGrid, Line, Legend, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
+import { Route, Link } from "react-router-dom";
+import DetailedStockScreen from '../screens/DetailedStockScreen'
 
 
 const companyNames = {
@@ -41,6 +43,10 @@ class StockContainer extends Component {
     })
   }
 
+  companyNameClick = () => {
+    console.log(111)
+  }
+
   render() {
 
     const { data, colour } = this.props
@@ -49,7 +55,9 @@ class StockContainer extends Component {
     return (
       <div className="stockCard">
         <div className="stockTitleDetails">
-          <p className="stockName">{companyNames[data.symbol]}</p>
+          <a onClick={() => this.companyNameClick()} className="stockName">
+            <Link to='/detailedStock'>{companyNames[data.symbol]}</Link>
+          </a>
           <p className="stockSymbol">{data.symbol}</p>
         </div>
         <div className="stockDetails">
@@ -75,6 +83,8 @@ class StockContainer extends Component {
             </AreaChart>
           </ResponsiveContainer>
         </div>
+
+        
       </div>
     );
   }
